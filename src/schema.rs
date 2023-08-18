@@ -7,9 +7,9 @@ pub struct SearchTermQueryParams {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct CreatePersonSchema {
-    pub apelido: String,
-    pub nome: String,
-    pub nascimento: String,
+    pub apelido: Option<String>,
+    pub nome: Option<String>,
+    pub nascimento: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub stack: Option<Vec<String>>,
 }

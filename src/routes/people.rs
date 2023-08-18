@@ -23,7 +23,7 @@ pub async fn post(
         Uuid::new_v4(),
         body.apelido,
         body.nome,
-        NaiveDate::parse_from_str(&body.nascimento, "%Y-%m-%d").unwrap(),
+        NaiveDate::parse_from_str(&body.nascimento.unwrap(), "%Y-%m-%d").unwrap(),
         body.stack.as_deref(),
     )
     .fetch_one(&data.db)
@@ -46,15 +46,13 @@ pub async fn post(
             return Ok((headers, (StatusCode::CREATED, Json(person_response))));
         }
         Err(e) => {
-            if e.to_string()
-                .contains("duplicate key value violates unique constraint")
-            {
-                let error_response = serde_json::json!({
-                    "status": "fail",
-                    "message": "Note with that title already exists",
-                });
-                return Err((StatusCode::UNPROCESSABLE_ENTITY, Json(error_response)));
+            if e.to_string().contains("database") && e.to_string().contains("error") {
+                return Err((
+                    StatusCode::UNPROCESSABLE_ENTITY,
+                    Json(json!({"status": "error","message": format!("{:?}", e)})),
+                ));
             }
+
             return Err((
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(json!({"status": "error","message": format!("{:?}", e)})),
