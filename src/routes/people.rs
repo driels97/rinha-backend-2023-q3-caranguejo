@@ -1,21 +1,46 @@
 use axum::{
-    extract::{Path, Query, State},
+    extract::{rejection::JsonRejection, Path, Query, State},
     http::{HeaderMap, StatusCode},
     response::IntoResponse,
     Json,
 };
+use axum_extra::extract::WithRejection;
 use chrono::NaiveDate;
 use serde_json::json;
 use std::sync::Arc;
+use thiserror::Error;
 use uuid::Uuid;
 
 use crate::models::person::Person;
 use crate::schema::{CreatePersonSchema, SearchTermQueryParams};
 use crate::AppState;
 
+#[derive(Debug, Error)]
+pub enum ApiError {
+    #[error(transparent)]
+    JsonExtractorRejection(#[from] JsonRejection),
+}
+
+impl IntoResponse for ApiError {
+    fn into_response(self) -> axum::response::Response {
+        let (status, message) = match self {
+            ApiError::JsonExtractorRejection(json_rejection) => {
+                (StatusCode::BAD_REQUEST, json_rejection.body_text())
+            }
+        };
+
+        let payload = json!({
+            "status": "error",
+            "message": message,
+        });
+
+        (status, Json(payload)).into_response()
+    }
+}
+
 pub async fn post(
     State(data): State<Arc<AppState>>,
-    Json(body): Json<CreatePersonSchema>,
+    WithRejection(Json(body), _): WithRejection<Json<CreatePersonSchema>, ApiError>,
 ) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
     let query_result = sqlx::query_as!(
         Person,
