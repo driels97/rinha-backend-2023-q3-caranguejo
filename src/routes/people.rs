@@ -120,19 +120,16 @@ pub async fn get_by_search_term(
             SELECT
             FROM unnest(stack) elem
             WHERE LOWER(elem) LIKE $1
-          )",
+          )
+        LIMIT 50",
         format!("%{}%", query_params.t.to_lowercase())
     )
     .fetch_all(&data.db)
     .await;
 
     match query_result {
-        Ok(mut people) => {
-            people.truncate(50);
-
-            let people_response = serde_json::json!(people);
-
-            return Ok(Json(people_response));
+        Ok(people) => {
+            return Ok(Json(serde_json::json!(people)));
         }
         Err(_) => {
             let error_response = serde_json::json!({
