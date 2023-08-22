@@ -116,13 +116,8 @@ pub async fn get_by_search_term(
 ) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
     let query_result = sqlx::query_as!(
         Person,
-        "SELECT * FROM people WHERE LOWER(apelido) LIKE $1 OR LOWER(nome) LIKE $1 OR EXISTS (
-            SELECT
-            FROM unnest(stack) elem
-            WHERE LOWER(elem) LIKE $1
-          )
-        LIMIT 50",
-        format!("%{}%", query_params.t.to_lowercase())
+        "SELECT * FROM people WHERE search ILIKE $1 LIMIT 50",
+        format!("%{}%", query_params.t)
     )
     .fetch_all(&data.db)
     .await;

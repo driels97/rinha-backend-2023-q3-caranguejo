@@ -26,7 +26,12 @@
       {
         "ordinal": 4,
         "name": "stack",
-        "type_info": "TextArray"
+        "type_info": "VarcharArray"
+      },
+      {
+        "ordinal": 5,
+        "name": "search",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -35,7 +40,7 @@
         "Varchar",
         "Varchar",
         "Date",
-        "TextArray"
+        "VarcharArray"
       ]
     },
     "nullable": [
@@ -43,6 +48,7 @@
       false,
       false,
       false,
+      true,
       true
     ]
   },

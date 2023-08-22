@@ -10,4 +10,5 @@ pub struct Person {
     pub nome: String,
     pub nascimento: NaiveDate,
     pub stack: Option<Vec<String>>,
+    pub search: Option<String>,
 }
