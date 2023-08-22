@@ -34,7 +34,7 @@ async fn main() {
         .merge(services::backend(app_state.clone()))
         .layer(cors);
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 80));
+    let addr = SocketAddr::from(([0, 0, 0, 0], 80));
     println!("listening on {}", addr);
 
     axum::Server::bind(&addr)

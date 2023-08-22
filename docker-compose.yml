@@ -4,8 +4,6 @@ services:
   api1:
     image: driels97/rinha-backend-2023-q3-api
     hostname: api1
-    ports:
-      - "8080:80"
     expose:
       - "80"
     depends_on:
@@ -21,8 +19,6 @@ services:
   api2:
     image: driels97/rinha-backend-2023-q3-api
     hostname: api2
-    ports:
-      - "8081:80"
     expose:
       - "80"
     depends_on:
@@ -63,8 +59,6 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
-    expose:
-      - 5432
     deploy:
       resources:
         limits:
