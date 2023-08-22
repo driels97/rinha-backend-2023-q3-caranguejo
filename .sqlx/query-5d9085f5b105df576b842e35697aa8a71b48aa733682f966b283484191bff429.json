@@ -1,0 +1,46 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM people WHERE LOWER(apelido) LIKE $1 OR LOWER(nome) LIKE $1 OR EXISTS (\n            SELECT\n            FROM unnest(stack) elem\n            WHERE LOWER(elem) LIKE $1\n          )\n        LIMIT 50",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "apelido",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "nome",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "nascimento",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 4,
+        "name": "stack",
+        "type_info": "TextArray"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "5d9085f5b105df576b842e35697aa8a71b48aa733682f966b283484191bff429"
+}

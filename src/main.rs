@@ -1,5 +1,4 @@
 use axum::Router;
-use dotenv::dotenv;
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 use std::net::SocketAddr;
 use std::sync::Arc;
@@ -16,8 +15,6 @@ pub struct AppState {
 
 #[tokio::main]
 async fn main() {
-    dotenv().ok();
-
     let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let pool = match PgPoolOptions::new().connect(&database_url).await {
         Ok(pool) => {
@@ -37,7 +34,7 @@ async fn main() {
         .merge(services::backend(app_state.clone()))
         .layer(cors);
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 8000));
+    let addr = SocketAddr::from(([127, 0, 0, 1], 80));
     println!("listening on {}", addr);
 
     axum::Server::bind(&addr)
